@@ -118,6 +118,7 @@ class SharedResources {
             // This ensures only allowed number of processes run simultaneously
 
             try {
+                SharedResources.cpuSemaphore.acquire();
                 if (startTime == -1) {
                     startTime = System.currentTimeMillis();
                 }
@@ -178,6 +179,8 @@ class SharedResources {
 
             } finally {
                 // TODO #4: Release CPU semaphore here
+                // release semaphore after process finishes using CPU
+                SharedResources.cpuSemaphore.release();
                 // Always release in finally block to prevent deadlocks!
             }
         }
