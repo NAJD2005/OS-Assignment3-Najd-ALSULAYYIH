@@ -45,9 +45,7 @@ class SharedResources {
     // using counterLock and logLock defined above to protect critical sections
     // Example: public static final ReentrantLock lock = new ReentrantLock();
     // lock for protecting shared counters
-    public static final ReentrantLock counterLock = new ReentrantLock();
-    public static final ReentrantLock logLock = new ReentrantLock();
-    public static final Semaphore cpuSemaphore = new Semaphore(1);
+
     // TODO #2: Add a Semaphore to limit concurrent process execution
     // using cpuSemaphore defined above to limit concurrent execution
     // Example: public static final Semaphore cpuSemaphore = new Semaphore(1);
