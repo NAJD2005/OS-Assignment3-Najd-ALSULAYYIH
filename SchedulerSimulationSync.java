@@ -79,18 +79,18 @@ class SharedResources {
         }
     }
 
-    // Method to log execution //
+    // Method to log execution
     public static void logExecution(String message) {
         logLock.lock();
         try {
             executionLog.add(message);
         } finally {
             logLock.unlock();
-        } //
-    }////////modification
+        }
+    }
 }
 
-///
+//
 // Class representing a process that implements Runnable to be run by a thread
 class Process implements Runnable {
     private String name;
@@ -116,13 +116,15 @@ class Process implements Runnable {
     public void run() {
         // TODO #3: Acquire CPU semaphore before executing
         // This ensures only allowed number of processes run simultaneously
-
         try {
+            // Step 1: Request access to CPU (Critical Section Entry)
+
             SharedResources.cpuSemaphore.acquire();
+
+            // Step 2: Record start time when process first gets the CPU
             if (startTime == -1) {
                 startTime = System.currentTimeMillis();
             }
-
             // Increment context switch counter
             SharedResources.incrementContextSwitch();
 
@@ -176,13 +178,15 @@ class Process implements Runnable {
                         Colors.RESET);
             }
             System.out.println();
-
+        } catch (InterruptedException e) {
+            System.out.println("Error acquiring semaphore");
         } finally {
             // TODO #4: Release CPU semaphore here
             // release semaphore after process finishes using CPU
             SharedResources.cpuSemaphore.release();
             // Always release in finally block to prevent deadlocks!
         }
+
     }
 
     private String createProgressBar(int progress, int width) {
@@ -202,7 +206,7 @@ class Process implements Runnable {
     public void runToCompletion() {
         // TODO: Similar synchronization needed here
         try {
-            SharedResources.cpuSemaphore.acquire();
+           
             System.out.println(Colors.BRIGHT_CYAN + "  ⚡ " + Colors.BOLD + Colors.CYAN + name +
                     Colors.RESET + Colors.BRIGHT_CYAN + " is the last process, running to completion" +
                     Colors.RESET + " [" + remainingTime + "ms]");
@@ -219,10 +223,7 @@ class Process implements Runnable {
             System.out.println();
         } catch (InterruptedException e) {
             System.out.println(Colors.RED + "  ✗ " + name + " was interrupted." + Colors.RESET);
-        } finally {
-            // release semaphore after completion
-            SharedResources.cpuSemaphore.release();
-        }
+      
     }
 
     public String getName() {
